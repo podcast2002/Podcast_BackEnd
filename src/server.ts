@@ -23,7 +23,7 @@ const corsOptions = {
   ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["content-type", "Authorization"],
+  allowedHeaders: ["Origin", "content-type", "Authorization"],
 };
 
 app.use(cors(corsOptions));
@@ -34,10 +34,10 @@ app.use((req, res, next) => {
 });
 
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
-  max: 100, 
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   standardHeaders: true,
-  legacyHeaders: false, 
+  legacyHeaders: false,
   message: {
     success: false,
     message: "Too many requests from this IP, please try again later.",
@@ -48,8 +48,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/auth", apiLimiter, authRoutes);
-app.use('/api/podcast',podcastRoutes);
-app.use('/api/episode',EpisodeRoutes)
+app.use('/api/podcast', podcastRoutes);
+app.use('/api/episode', EpisodeRoutes)
 
 app.get("/", (req, res) => {
   res.json({
