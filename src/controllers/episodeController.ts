@@ -1,10 +1,26 @@
 
 import Episode from "../models/Episode";
-import { getAudioDurationInSeconds } from 'get-audio-duration';
 import { Request, Response } from "express";
 import mongoose from "mongoose";
 import { cloudinary } from "../utils/cloudinary";
+
 const cache = new Map<string, { data: any; timestamp: number }>();
+
+import https from "https";
+
+async function getDurationFromUrl(audioUrl: string, bitrateKbps = 128): Promise<number> {
+    return new Promise((resolve, reject) => {
+        https
+            .get(audioUrl, (res) => {
+                const length = res.headers["content-length"];
+                if (!length) return reject("No content-length header");
+                const fileSizeInBytes = parseInt(length, 10);
+                const duration = (fileSizeInBytes * 8) / (bitrateKbps * 1000);
+                resolve(duration);
+            })
+            .on("error", reject);
+    });
+}
 
 
 export const createEpisode = async (req: Request, res: Response) => {
@@ -12,8 +28,8 @@ export const createEpisode = async (req: Request, res: Response) => {
         const { podcastId, title, description, members } = req.body;
 
         const files = req.files as {
-            audio?: Express.Multer.File[],
-            imageCover?: Express.Multer.File[]
+            audio?: Express.Multer.File[];
+            imageCover?: Express.Multer.File[];
         };
 
         if (!files?.audio || files.audio.length === 0) {
@@ -44,10 +60,16 @@ export const createEpisode = async (req: Request, res: Response) => {
             } else {
                 console.warn("No Cloudinary URL returned for cover image");
             }
-        };
+        }
 
-        const duration = await getAudioDurationInSeconds(audioFile.path);
-        episodeData.duration = duration;
+        let duration = 0;
+        try {
+            duration = await getDurationFromUrl(audioFile.path);
+        } catch (err) {
+            console.warn("Failed to calculate duration:", err);
+        }
+
+        episodeData.duration = Math.round(duration);
         const episode = await Episode.create(episodeData);
 
         res.status(201).json(episode);
@@ -56,6 +78,9 @@ export const createEpisode = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Server error", err });
     }
 };
+
+
+
 
 export const getAllEpisodes = async (req: Request, res: Response) => {
     try {
