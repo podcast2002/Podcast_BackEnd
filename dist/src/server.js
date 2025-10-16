@@ -37,6 +37,10 @@ const corsOptions = {
     allowedHeaders: ["content-type", "Authorization"],
 };
 app.use((0, cors_1.default)(corsOptions));
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Credentials", "true");
+    next();
+});
 const apiLimiter = (0, express_rate_limit_1.default)({
     windowMs: 15 * 60 * 1000,
     max: 100,

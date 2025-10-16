@@ -27,6 +27,12 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Credentials", "true");
+  next();
+});
+
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
   max: 100, 
