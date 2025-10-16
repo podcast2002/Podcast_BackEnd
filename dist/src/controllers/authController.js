@@ -29,6 +29,7 @@ function setTokens(res, accessToken, refreshToken) {
             httpOnly: true,
             secure: true, // لازم true على production
             sameSite: "none", // لازم none عشان cross-domain
+            domain: ".obl.ee",
             path: "/",
             maxAge: 60 * 60 * 1000, // 1 ساعة
         });
@@ -36,6 +37,7 @@ function setTokens(res, accessToken, refreshToken) {
             httpOnly: true,
             secure: true,
             sameSite: "none",
+            domain: ".obl.ee",
             path: "/",
             maxAge: 7 * 24 * 60 * 60 * 1000, // أسبوع
         });
