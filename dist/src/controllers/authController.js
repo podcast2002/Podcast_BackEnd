@@ -27,14 +27,14 @@ function setTokens(res, accessToken, refreshToken) {
         res.cookie("accessToken", accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            maxAge: 1000 * 60 * 60,
-            sameSite: "strict",
+            maxAge: 24 * 60 * 60 * 1000,
+            sameSite: "none",
         });
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: true,
             maxAge: 1000 * 60 * 60 * 24 * 7,
-            sameSite: "strict",
+            sameSite: "none",
         });
     });
 }
