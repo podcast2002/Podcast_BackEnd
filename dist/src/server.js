@@ -36,6 +36,7 @@ const corsOptions = {
     allowedHeaders: ["content-type", "Authorization"],
 };
 app.use((0, cors_1.default)(corsOptions));
+app.set("trust proxy", 1);
 const apiLimiter = (0, express_rate_limit_1.default)({
     windowMs: 15 * 60 * 1000,
     max: 100,
