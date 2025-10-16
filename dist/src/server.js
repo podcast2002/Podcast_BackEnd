@@ -28,6 +28,7 @@ const PORT = process.env.PORT || 6002;
 const corsOptions = {
     origin: [
         "http://localhost:3000",
+        "https://podcast-front-end.vercel.app",
         "https://podcast-gilt-tau.vercel.app"
     ],
     credentials: true,

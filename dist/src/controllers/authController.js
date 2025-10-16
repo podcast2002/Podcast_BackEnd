@@ -24,17 +24,20 @@ function generateAccessToken(userId, email, role) {
 }
 function setTokens(res, accessToken, refreshToken) {
     return __awaiter(this, void 0, void 0, function* () {
+        const isProduction = process.env.NODE_ENV === "production";
         res.cookie("accessToken", accessToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            maxAge: 24 * 60 * 60 * 1000,
-            sameSite: "none",
+            secure: true, // لازم true على production
+            sameSite: "none", // لازم none عشان cross-domain
+            path: "/",
+            maxAge: 60 * 60 * 1000, // 1 ساعة
         });
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: true,
-            maxAge: 1000 * 60 * 60 * 24 * 7,
             sameSite: "none",
+            path: "/",
+            maxAge: 7 * 24 * 60 * 60 * 1000, // أسبوع
         });
     });
 }
