@@ -13,6 +13,7 @@ import podcastRoutes from './routes/podcastRoutes';
 import EpisodeRoutes from './routes/episodeRoutes';
 const app = express();
 const PORT = process.env.PORT || 6002;
+app.set("trust proxy", 1);
 
 const corsOptions = {
   origin: [
@@ -26,7 +27,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.set("trust proxy", 1);
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
   max: 100, 
