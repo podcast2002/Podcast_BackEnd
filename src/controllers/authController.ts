@@ -12,17 +12,21 @@ function generateAccessToken(userId: string, email: string, role: string) {
 }
 
 async function setTokens(res: Response, accessToken: string, refreshToken: string) {
+    const isProduction = process.env.NODE_ENV === "production";
+
     res.cookie("accessToken", accessToken, {
         httpOnly: true,
-        maxAge: 1000 * 60 * 60,
-        sameSite: "none",
-        secure: true,
+        secure: true, // لازم true على production
+        sameSite: "none", // لازم none عشان cross-domain
+        path: "/",
+        maxAge: 60 * 60 * 1000, // 1 ساعة
     });
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
-        maxAge: 1000 * 60 * 60 * 24 * 7,
         sameSite: "none",
+        path: "/",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // أسبوع
     });
 }
 
