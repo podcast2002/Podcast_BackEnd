@@ -14,9 +14,9 @@ function generateAccessToken(userId: string, email: string, role: string) {
 async function setTokens(res: Response, accessToken: string, refreshToken: string) {
     res.cookie("accessToken", accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
         maxAge: 1000 * 60 * 60,
         sameSite: "none",
+        secure: true,
     });
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
